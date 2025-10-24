@@ -6,7 +6,7 @@
 using namespace std;
 
 #define SCREEN_WIDTH GetSystemMetrics(SM_CXVIRTUALSCREEN)
-#define SCREEN_HEIGHT GetSystemMetrics(SM_CXVIRTUALSCREEN)
+#define SCREEN_HEIGHT GetSystemMetrics(SM_CYVIRTUALSCREEN)
 
 namespace Wwin
 {
