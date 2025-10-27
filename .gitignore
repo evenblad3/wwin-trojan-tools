@@ -3,6 +3,17 @@
 wwin/cache/
 wwin/build/
 
+# CMake Build Directories
+build/
+out/
+CMakeFiles/
+
+# CMake Generated Files
+CMakeCache.txt
+cmake_install.cmake
+*.cmake
+!CMakeLists.txt
+
 # Prerequisites
 *.d
 
