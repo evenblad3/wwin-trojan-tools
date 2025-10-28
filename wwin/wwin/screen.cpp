@@ -2,6 +2,7 @@
 
 #include <thread>
 #include <chrono>
+#include <random>
 
 using namespace std;
 
@@ -10,6 +11,48 @@ using namespace std;
 
 namespace Wwin
 {
+    class RandomGenerator
+    {
+        static std::mt19937 &get_rand_engine()
+        {
+            static thread_local std::mt19937 engine(std::random_device{}());
+            return engine;
+        }
+
+    public:
+        static int range(int min, int max)
+        {
+            std::uniform_int_distribution<int> int_dist(min, max);
+            return int_dist(get_rand_engine());
+        }
+
+        static float range(float min, float max)
+        {
+            std::uniform_real_distribution<float> real_dist(min, max);
+            return real_dist(get_rand_engine());
+        }
+
+        static int screenX()
+        {
+            return RandomGenerator::range(1, SCREEN_WIDTH -1);
+        }
+
+        static int screenY()
+        {
+            return RandomGenerator::range(1, SCREEN_HEIGHT -1);
+        }
+
+        static int shakeAmount()
+        {
+            return RandomGenerator::range(-256, 256);
+        }
+
+        static int noiseSize() {
+            return RandomGenerator::range(1, 10);
+        }
+
+    };
+
     HDC InitializeMemoryDC(HDC& desktopDC, HBITMAP& hBitmap)
     {
         HDC memoryDC = CreateCompatibleDC(desktopDC);
@@ -56,11 +99,9 @@ namespace Wwin
 
         for (int i = 0; i < number; i++)
         {
-            int shakeAmountY = rand() % 512;
-
-            BitBlt(memoryDC, 0, shakeAmountY, SCREEN_WIDTH, SCREEN_HEIGHT, desktopDC, 0, 0, SRCCOPY);
+            BitBlt(memoryDC, 0, RandomGenerator::shakeAmount(), SCREEN_WIDTH, SCREEN_HEIGHT, desktopDC, 0, 0, SRCCOPY);
             BitBlt(desktopDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, memoryDC, 0, 0, SRCINVERT);
-            PatBlt(desktopDC, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, 0, 0, PATINVERT);
+            PatBlt(desktopDC, RandomGenerator::screenX(), RandomGenerator::screenY(), 0, 0, PATINVERT);
 
             UpdateWindow(desktopWindow);
 
@@ -122,16 +163,12 @@ namespace Wwin
             HWND desktopWindow = GetDesktopWindow();
             HDC desktopDC = GetWindowDC(desktopWindow);
 
-            int shakeAmountX = rand() % 10;
-            int shakeAmountY = rand() % 10;
-
-            BitBlt(desktopDC, shakeAmountX, shakeAmountY, SCREEN_WIDTH, SCREEN_HEIGHT, desktopDC, 0, 0, SRCCOPY);
+            BitBlt(desktopDC, RandomGenerator::shakeAmount(), RandomGenerator::shakeAmount(), SCREEN_WIDTH, SCREEN_HEIGHT, desktopDC, 0, 0, SRCCOPY);
 
             SetROP2(desktopDC, R2_NOTXORPEN);
             Rectangle(desktopDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-            int noiseSize = rand() % 10;
-            PatBlt(desktopDC, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, noiseSize, noiseSize, PATINVERT);
+            PatBlt(desktopDC, RandomGenerator::screenX(), RandomGenerator::screenY(), RandomGenerator::noiseSize(), RandomGenerator::noiseSize(), PATINVERT);
 
             ReleaseDC(desktopWindow, desktopDC);
             this_thread::sleep_for(chrono::nanoseconds(delay));
