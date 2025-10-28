@@ -11,6 +11,7 @@ add_executable(wwin
     wwin/wwin/screen.cpp
     wwin/wwin/sounds.cpp
     wwin/wwin/utilits.cpp
+    wwin/wwin/wrandom.cpp
 )
 
 target_include_directories(wwin PRIVATE

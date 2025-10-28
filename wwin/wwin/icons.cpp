@@ -4,13 +4,16 @@
 
 #include <thread>
 #include <chrono>
+#include "wrandom.h"
 
 using namespace std;
 
 #define SCREEN_WIDTH GetSystemMetrics(SM_CXVIRTUALSCREEN)
 #define SCREEN_HEIGHT GetSystemMetrics(SM_CXVIRTUALSCREEN)
 
-vector<HICON> icons = { LoadIcon(NULL, IDI_ERROR), LoadIcon(NULL, IDI_WARNING), LoadIcon(NULL, IDI_QUESTION), LoadIcon(NULL, IDI_INFORMATION) };
+vector<HICON> icons = {
+    LoadIcon(NULL, IDI_ERROR), LoadIcon(NULL, IDI_WARNING), LoadIcon(NULL, IDI_QUESTION), LoadIcon(NULL, IDI_INFORMATION)
+};
 
 namespace Wwin
 {
@@ -21,7 +24,7 @@ namespace Wwin
             HWND hWnd = GetDesktopWindow();
             HDC hdc = GetWindowDC(hWnd);
 
-            DrawIcon(hdc, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, icons[rand() % icons.size()]);
+            DrawIcon(hdc, RandomGenerator::screenX(), RandomGenerator::screenY(), icons[RandomGenerator::range(0, icons.size() - 1)]);
 
             ReleaseDC(hWnd, hdc);
             this_thread::sleep_for(chrono::nanoseconds(delay));
@@ -35,11 +38,11 @@ namespace Wwin
             HWND hWnd = GetDesktopWindow();
             HDC hdc = GetWindowDC(hWnd);
 
-            int x = rand() % SCREEN_WIDTH;
-            int y = rand() % SCREEN_HEIGHT;
+            int x = RandomGenerator::screenX();
+            int y = RandomGenerator::screenY();
 
-            HICON icon = icons[rand() % icons.size()];
-            int iconSize = rand() % maxIconSize;
+            HICON icon = icons[RandomGenerator::range(0, icons.size() - 1)];
+            int iconSize = RandomGenerator::range(0, maxIconSize);
 
             DrawIconEx(hdc, x, y, icon, iconSize, iconSize, 0, NULL, DI_NORMAL);
 
@@ -58,7 +61,7 @@ namespace Wwin
             POINT cursorPos;
             GetCursorPos(&cursorPos);
 
-            DrawIcon(hdc, cursorPos.x, cursorPos.y, icons[rand() % icons.size()]);
+            DrawIcon(hdc, cursorPos.x, cursorPos.y, icons[RandomGenerator::range(0, icons.size() - 1)]);
 
             ReleaseDC(hWnd, hdc);
             this_thread::sleep_for(chrono::nanoseconds(delay));

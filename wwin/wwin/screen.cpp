@@ -2,7 +2,7 @@
 
 #include <thread>
 #include <chrono>
-#include <random>
+#include "wrandom.h"
 
 using namespace std;
 
@@ -11,48 +11,6 @@ using namespace std;
 
 namespace Wwin
 {
-    class RandomGenerator
-    {
-        static std::mt19937 &get_rand_engine()
-        {
-            static thread_local std::mt19937 engine(std::random_device{}());
-            return engine;
-        }
-
-    public:
-        static int range(int min, int max)
-        {
-            std::uniform_int_distribution<int> int_dist(min, max);
-            return int_dist(get_rand_engine());
-        }
-
-        static float range(float min, float max)
-        {
-            std::uniform_real_distribution<float> real_dist(min, max);
-            return real_dist(get_rand_engine());
-        }
-
-        static int screenX()
-        {
-            return RandomGenerator::range(1, SCREEN_WIDTH -1);
-        }
-
-        static int screenY()
-        {
-            return RandomGenerator::range(1, SCREEN_HEIGHT -1);
-        }
-
-        static int shakeAmount()
-        {
-            return RandomGenerator::range(-256, 256);
-        }
-
-        static int noiseSize() {
-            return RandomGenerator::range(1, 10);
-        }
-
-    };
-
     HDC InitializeMemoryDC(HDC& desktopDC, HBITMAP& hBitmap)
     {
         HDC memoryDC = CreateCompatibleDC(desktopDC);
